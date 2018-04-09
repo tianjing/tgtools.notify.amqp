@@ -1,4 +1,4 @@
-package tgools.notify.rabbitmq.websocket.listener.event;
+package tgtools.notify.rabbitmq.websocket.listener.event;
 
 import org.springframework.web.socket.WebSocketSession;
 import tgtools.interfaces.Event;

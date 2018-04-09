@@ -1,4 +1,4 @@
-package tgools.notify.rabbitmq.config;
+package tgtools.notify.rabbitmq.config;
 
 import org.springframework.amqp.core.Exchange;
 import org.springframework.amqp.core.FanoutExchange;
@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
 import org.springframework.context.annotation.Bean;
-import tgools.notify.rabbitmq.core.Constants;
-import tgools.notify.rabbitmq.service.RabbitMqService;
+import tgtools.notify.rabbitmq.core.Constants;
+import tgtools.notify.rabbitmq.service.RabbitMqService;
 
 /**
  * @author 田径

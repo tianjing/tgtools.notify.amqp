@@ -1,4 +1,4 @@
-package tgools.notify.rabbitmq.core;
+package tgtools.notify.rabbitmq.core;
 
 import java.util.HashMap;
 import java.util.Map;

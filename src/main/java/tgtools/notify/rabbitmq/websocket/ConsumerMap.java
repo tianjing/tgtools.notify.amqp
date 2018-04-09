@@ -1,4 +1,4 @@
-package tgools.notify.rabbitmq.websocket;
+package tgtools.notify.rabbitmq.websocket;
 
 
 import com.rabbitmq.client.Channel;
@@ -8,7 +8,7 @@ import org.springframework.amqp.rabbit.core.ChannelAwareMessageListener;
 import org.springframework.amqp.rabbit.listener.AbstractMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.stereotype.Component;
-import tgools.notify.rabbitmq.service.RabbitMqService;
+import tgtools.notify.rabbitmq.service.RabbitMqService;
 import tgtools.util.LogHelper;
 
 import java.io.IOException;
@@ -25,6 +25,7 @@ public class ConsumerMap extends java.util.concurrent.ConcurrentHashMap<String, 
     {
         mWsClientFactory=pWsClientFactory;
     }
+
     protected RabbitMqService mRabbitMqService = new RabbitMqService();
     protected WsClientFactory mWsClientFactory;
 

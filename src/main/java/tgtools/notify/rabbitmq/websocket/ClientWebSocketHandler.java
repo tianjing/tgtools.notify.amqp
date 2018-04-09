@@ -1,9 +1,8 @@
-package tgools.notify.rabbitmq.websocket;
+package tgtools.notify.rabbitmq.websocket;
 
-import org.apache.shiro.mgt.SecurityManager;
+import tgtools.notify.rabbitmq.core.NotifyMessage;
 import tgtools.exceptions.APPErrorException;
 import tgtools.web.develop.command.CommandFactory;
-import tgtools.web.develop.service.UserService;
 import tgtools.web.develop.websocket.AbstractSingleWebSocketHandler;
 import tgtools.web.develop.websocket.ClientFactory;
 
@@ -25,11 +24,11 @@ public abstract class ClientWebSocketHandler extends AbstractSingleWebSocketHand
     public void sendMessage(String pLoginName,String pMessage) throws APPErrorException {
         mClientFactory.sendMessage(pLoginName,pMessage);
     }
-
+    public void sendNotifyMessage(String pLoginName,NotifyMessage pMessage) throws APPErrorException {
+        ((WsClientFactory)mClientFactory).sendNotifyMessage(pLoginName,pMessage);
+    }
     protected ClientFactory getClientFactory(){
         return new WsClientFactory();
     }
-    protected abstract UserService getUserService();
-    protected abstract SecurityManager getSecurityManager();
     protected abstract void initCommand();
 }

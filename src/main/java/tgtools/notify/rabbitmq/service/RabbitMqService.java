@@ -1,4 +1,4 @@
-package tgools.notify.rabbitmq.service;
+package tgtools.notify.rabbitmq.service;
 
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.core.ChannelAwareMessageListener;
@@ -6,7 +6,7 @@ import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tgools.notify.rabbitmq.core.Constants;
+import tgtools.notify.rabbitmq.core.Constants;
 import tgtools.exceptions.APPErrorException;
 import tgtools.util.LogHelper;
 import tgtools.util.StringUtil;

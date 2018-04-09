@@ -1,7 +1,7 @@
-package tgools.notify.rabbitmq.websocket.listener;
+package tgtools.notify.rabbitmq.websocket.listener;
 
-import tgools.notify.rabbitmq.websocket.listener.event.AddClientEvent;
-import tgools.notify.rabbitmq.websocket.listener.event.RemoveClientEvent;
+import tgtools.notify.rabbitmq.websocket.listener.event.AddClientEvent;
+import tgtools.notify.rabbitmq.websocket.listener.event.RemoveClientEvent;
 
 /**
  * @author 田径

@@ -1,9 +1,11 @@
-package tgools.notify.rabbitmq.websocket;
+package tgtools.notify.rabbitmq.websocket;
 
 import org.springframework.web.socket.WebSocketSession;
-import tgools.notify.rabbitmq.websocket.listener.ClientFactoryListener;
-import tgools.notify.rabbitmq.websocket.listener.event.AddClientEvent;
-import tgools.notify.rabbitmq.websocket.listener.event.RemoveClientEvent;
+import tgtools.notify.rabbitmq.core.NotifyMessage;
+import tgtools.notify.rabbitmq.websocket.listener.ClientFactoryListener;
+import tgtools.notify.rabbitmq.websocket.listener.event.AddClientEvent;
+import tgtools.notify.rabbitmq.websocket.listener.event.RemoveClientEvent;
+import tgtools.exceptions.APPErrorException;
 import tgtools.web.develop.websocket.ClientFactory;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -67,5 +69,9 @@ public class WsClientFactory extends ClientFactory {
         {
             mClientFactoryListener.removeClient(this,new RemoveClientEvent(pUserName));
         }
+    }
+
+    public void sendNotifyMessage(String pLoginName,NotifyMessage pMessage) throws APPErrorException {
+        sendMessage(pLoginName,tgtools.util.JsonParseHelper.parseToJson(pMessage,false));
     }
 }
