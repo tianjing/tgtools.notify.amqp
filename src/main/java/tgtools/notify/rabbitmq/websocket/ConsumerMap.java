@@ -7,6 +7,7 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.ChannelAwareMessageListener;
 import org.springframework.amqp.rabbit.listener.AbstractMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import tgtools.notify.rabbitmq.service.RabbitMqService;
 import tgtools.util.LogHelper;
@@ -21,12 +22,10 @@ import java.io.IOException;
  */
 @Component
 public class ConsumerMap extends java.util.concurrent.ConcurrentHashMap<String, AbstractMessageListenerContainer> {
-    public ConsumerMap(WsClientFactory pWsClientFactory)
-    {
-        mWsClientFactory=pWsClientFactory;
-    }
 
-    protected RabbitMqService mRabbitMqService = new RabbitMqService();
+    @Autowired
+    protected RabbitMqService mRabbitMqService;
+    @Autowired
     protected WsClientFactory mWsClientFactory;
 
     public void createConsumer(String pLoginName) {

@@ -3,6 +3,7 @@ package tgtools.notify.rabbitmq.websocket;
 import tgtools.notify.rabbitmq.core.NotifyMessage;
 import tgtools.exceptions.APPErrorException;
 import tgtools.web.develop.command.CommandFactory;
+import tgtools.web.develop.service.UserService;
 import tgtools.web.develop.websocket.AbstractSingleWebSocketHandler;
 import tgtools.web.develop.websocket.ClientFactory;
 
@@ -13,9 +14,9 @@ import tgtools.web.develop.websocket.ClientFactory;
  * @date 17:05
  */
 
-public abstract class ClientWebSocketHandler extends AbstractSingleWebSocketHandler {
+public abstract class AbstractClientWebSocketHandler<T extends UserService> extends AbstractSingleWebSocketHandler<T> {
 
-    public ClientWebSocketHandler()
+    public AbstractClientWebSocketHandler()
     {
         mClientFactory =getClientFactory();
         mWebsocketCommand = new CommandFactory(getCommandType());
@@ -27,8 +28,7 @@ public abstract class ClientWebSocketHandler extends AbstractSingleWebSocketHand
     public void sendNotifyMessage(String pLoginName,NotifyMessage pMessage) throws APPErrorException {
         ((WsClientFactory)mClientFactory).sendNotifyMessage(pLoginName,pMessage);
     }
-    protected ClientFactory getClientFactory(){
-        return new WsClientFactory();
-    }
+    protected abstract ClientFactory getClientFactory();
+
     protected abstract void initCommand();
 }

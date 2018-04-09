@@ -1,5 +1,7 @@
 package tgtools.notify.rabbitmq.websocket;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 import tgtools.notify.rabbitmq.core.NotifyMessage;
 import tgtools.notify.rabbitmq.websocket.listener.ClientFactoryListener;
@@ -16,8 +18,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Description
  * @date 11:37
  */
+@Component
 public class WsClientFactory extends ClientFactory {
-    protected ConsumerMap consumerMap =new ConsumerMap(this);
+    @Autowired
+    protected ConsumerMap consumerMap ;
     protected ClientFactoryListener mClientFactoryListener;
 
     public void setClientFactoryListener(ClientFactoryListener pClientFactoryListener) {
@@ -72,6 +76,6 @@ public class WsClientFactory extends ClientFactory {
     }
 
     public void sendNotifyMessage(String pLoginName,NotifyMessage pMessage) throws APPErrorException {
-        sendMessage(pLoginName,tgtools.util.JsonParseHelper.parseToJson(pMessage,false));
+        sendMessage(pLoginName,pMessage.toString());
     }
 }

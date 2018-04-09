@@ -1,5 +1,9 @@
 package tgtools.notify.rabbitmq.core;
 
+import tgtools.exceptions.APPErrorException;
+import tgtools.json.JSONArray;
+import tgtools.json.JSONObject;
+
 import java.util.Date;
 
 /**
@@ -12,7 +16,7 @@ public class NotifyMessage {
 
     protected String mSender;
     protected String mReceiver;
-    protected String mContent;
+    protected Object mContent;
     protected Date mCTime;
     protected String mType;
 
@@ -32,11 +36,11 @@ public class NotifyMessage {
         mReceiver = pReceiver;
     }
 
-    public String getContent() {
+    public Object getContent() {
         return mContent;
     }
 
-    public void setContent(String pContent) {
+    public void setContent(Object pContent) {
         mContent = pContent;
     }
 
@@ -54,5 +58,29 @@ public class NotifyMessage {
 
     public void setType(String pType) {
         mType = pType;
+    }
+
+    public JSONObject toJson() throws APPErrorException {
+        JSONObject json =new JSONObject();
+        json.put("sender",getSender());
+        json.put("receiver",getReceiver());
+        json.put("type",getType());
+
+        if(null==getContent()||(getContent() instanceof JSONObject)||(getContent() instanceof JSONArray))
+        {json.put("content",getContent());}
+        else
+        {
+            json.put("content",tgtools.util.JsonParseHelper.parseToJsonObject(getContent()));
+        }
+        return json;
+    }
+
+    @Override
+    public String toString() {
+        try {
+            return toJson().toString();
+        } catch (APPErrorException e) {
+            return e.getMessage();
+        }
     }
 }

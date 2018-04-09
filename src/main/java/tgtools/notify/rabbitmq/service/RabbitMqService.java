@@ -30,6 +30,12 @@ public class RabbitMqService {
     Exchange clientSystemExchange;
     @Autowired
     Exchange serverSystemExchange;
+
+
+    public RabbitAdmin getRabbitAdmin() {
+        return mRabbitAdmin;
+    }
+
     /**
      * 获取用户队列名称
      * @param pLoginName
@@ -138,6 +144,28 @@ public class RabbitMqService {
         container.setAcknowledgeMode(pAcknowledgeMode);
         return container;
     }
+
+    /**
+     * 发消息给用户
+     * @param pExchange exchange
+     * @param pRoutingKey routingKey
+     * @param pMessage message
+     */
+    public void sendMessage(String pExchange,String pRoutingKey,String pMessage)
+    {
+        mRabbitAdmin.getRabbitTemplate().convertAndSend(pExchange,pRoutingKey,pMessage);
+    }
+    /**
+     * @param pExchange exchange
+     * @param pRoutingKey routingKey
+     * @param pMessage message
+     */
+    public void sendMessage(String pExchange,String pRoutingKey,Message pMessage)
+    {
+        mRabbitAdmin.getRabbitTemplate().send(pExchange,pRoutingKey,pMessage);
+    }
+
+
     /**
      * 启动用户监听
      * @param pLoginName 用户登录名称（或唯一标识）
