@@ -64,6 +64,25 @@ public class RabbitMqService {
     }
 
     /**
+     * 发消息给用户
+     * @param pLoginName
+     * @param pMessage
+     */
+    public void sendToUserMessage(String pLoginName,Message pMessage)
+    {
+        mRabbitAdmin.getRabbitTemplate().send(getUserQueueName(pLoginName),StringUtil.EMPTY_STRING,pMessage);
+    }
+
+    /**
+     * 发消息给用户
+     * @param pLoginName
+     * @param pMessage
+     */
+    public void sendToUserMessage(String pLoginName,String pMessage)
+    {
+        mRabbitAdmin.getRabbitTemplate().convertAndSend(getUserQueueName(pLoginName),StringUtil.EMPTY_STRING,pMessage);
+    }
+    /**
      * 发送信息到 Constants.EXCHANGE_CLIENT_SYSTEM
      * @param pMessage
      */
