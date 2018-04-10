@@ -7,8 +7,6 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.ChannelAwareMessageListener;
 import org.springframework.amqp.rabbit.listener.AbstractMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import tgtools.notify.rabbitmq.service.RabbitMqService;
 import tgtools.util.LogHelper;
 
@@ -20,13 +18,17 @@ import java.io.IOException;
  * @Description
  * @date 19:07
  */
-@Component
-public class ConsumerMap extends java.util.concurrent.ConcurrentHashMap<String, AbstractMessageListenerContainer> {
 
-    @Autowired
+public class ConsumerMap extends java.util.concurrent.ConcurrentHashMap<String, AbstractMessageListenerContainer> {
+    protected AbstractClientWebSocketHandler mWebSocketHandler;
     protected RabbitMqService mRabbitMqService;
-    @Autowired
-    protected WsClientFactory mWsClientFactory;
+
+    public ConsumerMap(AbstractClientWebSocketHandler pWebSocketHandler) {
+        mWebSocketHandler = pWebSocketHandler;
+        if(null!=mWebSocketHandler) {
+            mRabbitMqService = new RabbitMqService(mWebSocketHandler.getRabbitAdmin());
+        }
+    }
 
     public void createConsumer(String pLoginName) {
         try {
@@ -40,6 +42,16 @@ public class ConsumerMap extends java.util.concurrent.ConcurrentHashMap<String, 
 
     }
 
+    public void removeConsumer(String pLoginName) {
+        if (containsKey(pLoginName)) {
+            AbstractMessageListenerContainer container = get(pLoginName);
+            if (null != container) {
+                remove(pLoginName);
+                container.stop();
+                container = null;
+            }
+        }
+    }
 
     public class MessageListenerImpl implements ChannelAwareMessageListener {
         private String mLoginName;
@@ -52,7 +64,7 @@ public class ConsumerMap extends java.util.concurrent.ConcurrentHashMap<String, 
         public void onMessage(Message pMsg, Channel pChannel) throws Exception {
             try {
                 System.out.println(mLoginName + " onMessage:" + new String(pMsg.getBody(), "UTF-8"));
-                ConsumerMap.this.mWsClientFactory.sendMessage(mLoginName, new String(pMsg.getBody(), "UTF-8"));
+                ConsumerMap.this.mWebSocketHandler.sendMessage(mLoginName, new String(pMsg.getBody(), "UTF-8"));
             } catch (Exception e) {
                 LogHelper.error("", "onMessage Error", "MessageListenerImpl.onMessage", e);
             }

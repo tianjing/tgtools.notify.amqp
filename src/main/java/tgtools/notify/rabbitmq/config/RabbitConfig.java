@@ -1,18 +1,15 @@
 package tgtools.notify.rabbitmq.config;
 
-import org.springframework.amqp.core.Exchange;
 import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.support.DefaultMessagePropertiesConverter;
-import org.springframework.amqp.rabbit.support.MessagePropertiesConverter;
-import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.amqp.support.converter.SimpleMessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import tgtools.notify.rabbitmq.core.Constants;
 import tgtools.notify.rabbitmq.service.RabbitMqService;
@@ -30,74 +27,27 @@ public abstract class RabbitConfig {
 
     @Bean("connectionFactory")
     public abstract ConnectionFactory getConnectionFactory();
-    // {
-//        com.rabbitmq.client.ConnectionFactory rabbitConnectionFactory =
-//                new com.rabbitmq.client.ConnectionFactory();
-//        rabbitConnectionFactory.setHost(rabbitProperties.getHost());
-//        rabbitConnectionFactory.setPort(rabbitProperties.getPort());
-//        rabbitConnectionFactory.setUsername(rabbitProperties.getUsername());
-//        rabbitConnectionFactory.setPassword(rabbitProperties.getPassword());
-//        rabbitConnectionFactory.setVirtualHost(rabbitProperties.getVirtualHost());
-//
-//        ConnectionFactory connectionFactory = new CachingConnectionFactory(rabbitConnectionFactory);
-//        return connectionFactory;
-//    }
 
     @Bean(name="rabbitAdmin")
     public RabbitAdmin getRabbitAdmin()
     {
         RabbitAdmin rabbitAdmin = new RabbitAdmin(getConnectionFactory());
         rabbitAdmin.setAutoStartup(true);
+        RabbitTemplate rabbitTemplate = rabbitAdmin.getRabbitTemplate();
+        rabbitTemplate.setUseTemporaryReplyQueues(false);
+        rabbitTemplate.setMessageConverter(new SimpleMessageConverter());
+        rabbitTemplate.setMessagePropertiesConverter(new DefaultMessagePropertiesConverter());
+        rabbitTemplate.setReceiveTimeout(60000);
         return rabbitAdmin;
     }
 
-    @Bean(name="serializerMessageConverter")
-    public MessageConverter getMessageConverter(){
-        return new SimpleMessageConverter();
-    }
-
-    @Bean(name="messagePropertiesConverter")
-    public MessagePropertiesConverter getMessagePropertiesConverter()
-    {
-        return new DefaultMessagePropertiesConverter();
-    }
-    @Bean(name="rabbitTemplate")
-    public RabbitTemplate getRabbitTemplate()
-    {
-        RabbitTemplate rabbitTemplate = new RabbitTemplate(getConnectionFactory());
-        rabbitTemplate.setUseTemporaryReplyQueues(false);
-        rabbitTemplate.setMessageConverter(getMessageConverter());
-        rabbitTemplate.setMessagePropertiesConverter(getMessagePropertiesConverter());
-        rabbitTemplate.setReceiveTimeout(60000);
-        return rabbitTemplate;
-    }
-
-
-    @Bean(name="timeoutQueue")
-    public Queue timeoutQueue(@Qualifier("rabbitAdmin")RabbitAdmin rabbitAdmin)
-    {
-        Queue sendQueue = new Queue(Constants.QUEUE_TIMEOUT,true,false,false);
-        rabbitAdmin.declareQueue(sendQueue);
-        return sendQueue;
-    }
-
-    @Bean(name="serverSystemExchange")
-    public Exchange serverSystemExchange(@Qualifier("rabbitAdmin")RabbitAdmin rabbitAdmin)
-    {
-        FanoutExchange sendExchange = new FanoutExchange(Constants.EXCHANGE_SERVER_SYSTEM,true,false);
-        rabbitAdmin.declareExchange(sendExchange);
-        return sendExchange;
-    }
-    @Bean(name="clientSystemExchange")
-    public Exchange clientSystemExchange(@Qualifier("rabbitAdmin")RabbitAdmin rabbitAdmin)
-    {
-        FanoutExchange sendExchange = new FanoutExchange(Constants.EXCHANGE_CLIENT_SYSTEM,true,false);
-        rabbitAdmin.declareExchange(sendExchange);
-        return sendExchange;
-    }
-    @Bean
+    @Bean(name="rabbitMqService")
     public RabbitMqService rabbitMqService()
     {
-        return new RabbitMqService();
+        RabbitMqService service=new RabbitMqService(getRabbitAdmin());
+        service.setServerSystemExchange(new FanoutExchange(Constants.EXCHANGE_SERVER_SYSTEM,true,false));
+        service.setClientSystemExchange(new FanoutExchange(Constants.EXCHANGE_CLIENT_SYSTEM,true,false));
+        service.setTimeoutQueue(new Queue(Constants.QUEUE_TIMEOUT,true,false,false));
+        return service;
     }
 }
