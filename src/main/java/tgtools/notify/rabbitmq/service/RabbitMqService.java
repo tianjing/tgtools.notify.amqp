@@ -120,7 +120,7 @@ public class RabbitMqService {
      * @param pMessage
      */
     public void sendToUserMessage(String pLoginName, Message pMessage) {
-        mRabbitAdmin.getRabbitTemplate().send(getUserQueueName(pLoginName), StringUtil.EMPTY_STRING, pMessage);
+        mRabbitAdmin.getRabbitTemplate().send(StringUtil.EMPTY_STRING,getUserQueueName(pLoginName), pMessage);
     }
 
     /**
@@ -130,7 +130,7 @@ public class RabbitMqService {
      * @param pMessage
      */
     public void sendToUserMessage(String pLoginName, String pMessage) {
-        mRabbitAdmin.getRabbitTemplate().convertAndSend(getUserQueueName(pLoginName), StringUtil.EMPTY_STRING, pMessage);
+        mRabbitAdmin.getRabbitTemplate().convertAndSend(StringUtil.EMPTY_STRING,getUserQueueName(pLoginName), pMessage);
     }
 
     /**

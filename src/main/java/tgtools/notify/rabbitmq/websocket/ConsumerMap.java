@@ -7,9 +7,11 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.ChannelAwareMessageListener;
 import org.springframework.amqp.rabbit.listener.AbstractMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import tgtools.interfaces.IDispose;
 import tgtools.notify.rabbitmq.service.RabbitMqService;
 import tgtools.util.LogHelper;
 
+import java.io.Closeable;
 import java.io.IOException;
 
 /**
@@ -19,7 +21,8 @@ import java.io.IOException;
  * @date 19:07
  */
 
-public class ConsumerMap extends java.util.concurrent.ConcurrentHashMap<String, AbstractMessageListenerContainer> {
+public class ConsumerMap implements IDispose,Closeable {
+    protected java.util.concurrent.ConcurrentHashMap<String, AbstractMessageListenerContainer> mContainers=new java.util.concurrent.ConcurrentHashMap<String, AbstractMessageListenerContainer>();
     protected AbstractClientWebSocketHandler mWebSocketHandler;
     protected RabbitMqService mRabbitMqService;
 
@@ -34,7 +37,7 @@ public class ConsumerMap extends java.util.concurrent.ConcurrentHashMap<String, 
         try {
             SimpleMessageListenerContainer container = mRabbitMqService.createUserConsumer(pLoginName, new MessageListenerImpl(pLoginName), AcknowledgeMode.MANUAL);
             container.start();
-            put(pLoginName, container);
+            mContainers.put(pLoginName, container);
             LogHelper.info("", "createConsumer name:" + pLoginName, "ConsumerMap");
         } catch (Exception e) {
             e.printStackTrace();
@@ -43,14 +46,31 @@ public class ConsumerMap extends java.util.concurrent.ConcurrentHashMap<String, 
     }
 
     public void removeConsumer(String pLoginName) {
-        if (containsKey(pLoginName)) {
-            AbstractMessageListenerContainer container = get(pLoginName);
+        if (mContainers.containsKey(pLoginName)) {
+            AbstractMessageListenerContainer container =  mContainers.get(pLoginName);
             if (null != container) {
-                remove(pLoginName);
+                mContainers.remove(pLoginName);
                 container.stop();
                 container = null;
             }
         }
+    }
+
+    @Override
+    public void close() throws IOException {
+        Dispose();
+    }
+
+    @Override
+    public void Dispose() {
+        for(AbstractMessageListenerContainer item : mContainers.values())
+        {
+            try {
+                item.stop();
+            }catch (Exception e)
+            {}
+        }
+        mContainers.clear();
     }
 
     public class MessageListenerImpl implements ChannelAwareMessageListener {
