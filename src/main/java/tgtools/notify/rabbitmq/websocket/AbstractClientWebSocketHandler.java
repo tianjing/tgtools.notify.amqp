@@ -1,8 +1,6 @@
 package tgtools.notify.rabbitmq.websocket;
 
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
-import tgtools.exceptions.APPErrorException;
-import tgtools.notify.rabbitmq.core.NotifyMessage;
 import tgtools.web.develop.websocket.AbstractSingleWebSocketHandler;
 import tgtools.web.develop.websocket.listener.ClientFactoryListener;
 import tgtools.web.develop.websocket.listener.event.AddClientEvent;
@@ -26,14 +24,7 @@ public abstract class AbstractClientWebSocketHandler extends AbstractSingleWebSo
     {
         super();
         mClientFactory.setClientFactoryListener(new ClientMessageListener());
-    }
-    public void sendMessage(String pLoginName, String pMessage) throws APPErrorException {
-        mClientFactory.sendMessage(pLoginName, pMessage);
-    }
-
-    public void sendNotifyMessage(String pLoginName, NotifyMessage pMessage) throws APPErrorException {
-        sendMessage(pLoginName, pMessage.toString());
-    }
+   }
 
     public class ClientMessageListener implements ClientFactoryListener{
 

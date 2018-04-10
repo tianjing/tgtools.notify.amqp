@@ -9,7 +9,6 @@ import org.springframework.amqp.rabbit.support.DefaultMessagePropertiesConverter
 import org.springframework.amqp.support.converter.SimpleMessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import tgtools.notify.rabbitmq.core.Constants;
 import tgtools.notify.rabbitmq.service.RabbitMqService;
@@ -48,6 +47,7 @@ public abstract class RabbitConfig {
         service.setServerSystemExchange(new FanoutExchange(Constants.EXCHANGE_SERVER_SYSTEM,true,false));
         service.setClientSystemExchange(new FanoutExchange(Constants.EXCHANGE_CLIENT_SYSTEM,true,false));
         service.setTimeoutQueue(new Queue(Constants.QUEUE_TIMEOUT,true,false,false));
+        service.initDeclare();
         return service;
     }
 }
