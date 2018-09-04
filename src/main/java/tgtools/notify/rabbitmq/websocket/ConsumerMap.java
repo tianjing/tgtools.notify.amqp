@@ -31,6 +31,18 @@ public class ConsumerMap implements Closeable {
             mRabbitMqService = new RabbitMqService(mWebSocketHandler.getRabbitAdmin());
         }
     }
+    public boolean hasConsumer(String pLoginName)
+    {
+        return mContainers.containsKey(pLoginName);
+    }
+    public boolean hasConsumer(AbstractMessageListenerContainer pContainer)
+    {
+        return mContainers.containsValue(pContainer);
+    }
+    public AbstractMessageListenerContainer getConsumer(String pLoginName)
+    {
+        return mContainers.get(pLoginName);
+    }
 
     public void createConsumer(String pLoginName) {
         try {
@@ -39,7 +51,7 @@ public class ConsumerMap implements Closeable {
             mContainers.put(pLoginName, container);
             LogHelper.info("", "createConsumer name:" + pLoginName, "ConsumerMap");
         } catch (Exception e) {
-            e.printStackTrace();
+            LogHelper.error("", "createConsumer 出错；原因:" +e.toString(), "ConsumerMap",e);
         }
 
     }
@@ -50,6 +62,8 @@ public class ConsumerMap implements Closeable {
             if (null != container) {
                 mContainers.remove(pLoginName);
                 container.stop();
+                container.destroy();
+                LogHelper.info("", "destroyConsumer name:" + pLoginName, "ConsumerMap");
                 container = null;
             }
         }
@@ -60,9 +74,11 @@ public class ConsumerMap implements Closeable {
         for (AbstractMessageListenerContainer item : mContainers.values()) {
             try {
                 item.stop();
+                item.destroy();
             } catch (Exception e) {
             }
         }
+        LogHelper.info("", "destroyAllConsumer" , "ConsumerMap");
         mContainers.clear();
         mContainers=null;
     }

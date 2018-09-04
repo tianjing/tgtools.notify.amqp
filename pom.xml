@@ -6,7 +6,7 @@
 
     <groupId>com.github.tianjing</groupId>
     <artifactId>tgtools.notify.amqp</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.3</version>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -51,7 +51,7 @@
         <dependency>
             <groupId>com.github.tianjing</groupId>
             <artifactId>tgtools.core</artifactId>
-            <version>1.0.275</version>
+            <version>1.1.0</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -61,7 +61,7 @@
         <dependency>
             <groupId>com.github.tianjing</groupId>
             <artifactId>tgtools.web.develop</artifactId>
-            <version>1.0.10</version>
+            <version>1.1.11</version>
         </dependency>
     </dependencies>
 

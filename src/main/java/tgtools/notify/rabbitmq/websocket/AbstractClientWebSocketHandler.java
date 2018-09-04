@@ -4,6 +4,7 @@ import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import tgtools.web.develop.websocket.AbstractSingleWebSocketHandler;
 import tgtools.web.develop.websocket.listener.ClientFactoryListener;
 import tgtools.web.develop.websocket.listener.event.AddClientEvent;
+import tgtools.web.develop.websocket.listener.event.ChangeClientEvent;
 import tgtools.web.develop.websocket.listener.event.RemoveClientEvent;
 
 /**
@@ -16,11 +17,15 @@ import tgtools.web.develop.websocket.listener.event.RemoveClientEvent;
 public abstract class AbstractClientWebSocketHandler extends AbstractSingleWebSocketHandler {
 
 
-    protected ConsumerMap mConsumerMap = new ConsumerMap(this);
+    private ConsumerMap mConsumerMap = new ConsumerMap(this);
+    public ConsumerMap getConsumerMap()
+    {
+        return mConsumerMap;
+    }
 
     public AbstractClientWebSocketHandler() {
         super();
-        mClientFactory.setClientFactoryListener(new ClientMessageListener());
+        getClientFactory().setClientFactoryListener(new ClientMessageListener());
     }
 
     public abstract RabbitAdmin getRabbitAdmin();
@@ -37,6 +42,11 @@ public abstract class AbstractClientWebSocketHandler extends AbstractSingleWebSo
         @Override
         public void addClient(Object pSender, AddClientEvent pEvnet) {
             AbstractClientWebSocketHandler.this.mConsumerMap.createConsumer(pEvnet.getLoginName());
+        }
+
+        @Override
+        public void changeClient(Object pSender, ChangeClientEvent pEvnet) {
+
         }
 
         @Override
