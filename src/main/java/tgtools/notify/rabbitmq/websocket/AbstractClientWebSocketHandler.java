@@ -16,8 +16,7 @@ import tgtools.web.develop.websocket.listener.event.RemoveClientEvent;
 
 public abstract class AbstractClientWebSocketHandler extends AbstractSingleWebSocketHandler {
 
-
-    private ConsumerMap mConsumerMap = new ConsumerMap(this);
+    private ConsumerMap mConsumerMap = null;
     public ConsumerMap getConsumerMap()
     {
         return mConsumerMap;
@@ -25,9 +24,13 @@ public abstract class AbstractClientWebSocketHandler extends AbstractSingleWebSo
 
     public AbstractClientWebSocketHandler() {
         super();
-        getClientFactory().setClientFactoryListener(new ClientMessageListener());
+        initClient();
     }
-
+    protected void initClient()
+    {
+        getClientFactory().setClientFactoryListener(new ClientMessageListener());
+        mConsumerMap = new ConsumerMap(this);
+    }
     public abstract RabbitAdmin getRabbitAdmin();
 
     @Override
