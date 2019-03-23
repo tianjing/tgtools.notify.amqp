@@ -16,7 +16,7 @@ import tgtools.web.develop.websocket.listener.event.RemoveClientEvent;
 
 public abstract class AbstractClientWebSocketHandler extends AbstractSingleWebSocketHandler {
 
-    private ConsumerMap mConsumerMap = null;
+    protected ConsumerMap mConsumerMap = null;
     public ConsumerMap getConsumerMap()
     {
         return mConsumerMap;

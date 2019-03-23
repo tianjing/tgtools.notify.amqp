@@ -22,7 +22,7 @@ import tgtools.notify.rabbitmq.service.RabbitMqService;
 
 public abstract class RabbitConfig {
     @Autowired
-    private RabbitProperties rabbitProperties;
+    protected RabbitProperties rabbitProperties;
 
     @Bean("connectionFactory")
     public abstract ConnectionFactory getConnectionFactory();

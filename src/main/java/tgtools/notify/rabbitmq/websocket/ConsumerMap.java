@@ -85,7 +85,7 @@ public class ConsumerMap implements Closeable {
 
 
     public class MessageListenerImpl implements ChannelAwareMessageListener {
-        private String mLoginName;
+        protected String mLoginName;
 
         public MessageListenerImpl(String pLoginName) {
             mLoginName = pLoginName;
