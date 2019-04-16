@@ -4,9 +4,8 @@ package tgtools.notify.rabbitmq.websocket;
 import com.rabbitmq.client.Channel;
 import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.core.Message;
-import org.springframework.amqp.rabbit.core.ChannelAwareMessageListener;
-import org.springframework.amqp.rabbit.listener.AbstractMessageListenerContainer;
-import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.amqp.rabbit.listener.*;
+import org.springframework.amqp.rabbit.listener.api.*;
 import tgtools.notify.rabbitmq.service.RabbitMqService;
 import tgtools.util.LogHelper;
 
@@ -92,20 +91,21 @@ public class ConsumerMap implements Closeable {
         }
 
         @Override
-        public void onMessage(Message pMsg, Channel pChannel) throws Exception {
+        public void onMessage(Message pMsg, Channel pChannel)  {
+
             try {
                 System.out.println(mLoginName + " onMessage:" + new String(pMsg.getBody(), "UTF-8"));
                 ConsumerMap.this.mWebSocketHandler.sendMessage(mLoginName, new String(pMsg.getBody(), "UTF-8"));
             } catch (Exception e) {
                 LogHelper.error("", "onMessage Error", "MessageListenerImpl.onMessage", e);
             }
-
             try {
                 pChannel.basicAck(pMsg.getMessageProperties().getDeliveryTag(), false);
             } catch (IOException e) {
                 LogHelper.error("", "消息 ack 出错", "MessageListenerImpl.onMessage", e);
             }
         }
+
 
     }
 

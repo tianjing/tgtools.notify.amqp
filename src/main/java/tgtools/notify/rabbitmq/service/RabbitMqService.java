@@ -1,7 +1,6 @@
 package tgtools.notify.rabbitmq.service;
 
 import org.springframework.amqp.core.*;
-import org.springframework.amqp.rabbit.core.ChannelAwareMessageListener;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import tgtools.exceptions.APPErrorException;
@@ -175,7 +174,7 @@ public class RabbitMqService {
      * @param pLoginName       用户登录名称（或唯一标识）
      * @param pMessageListener 消息处理
      */
-    public SimpleMessageListenerContainer createUserConsumer(String pLoginName, ChannelAwareMessageListener pMessageListener) {
+    public SimpleMessageListenerContainer createUserConsumer(String pLoginName, MessageListener pMessageListener) {
         return createUserConsumer(pLoginName, pMessageListener, AcknowledgeMode.AUTO);
     }
 
@@ -186,7 +185,7 @@ public class RabbitMqService {
      * @param pMessageListener 消息处理
      * @param pAcknowledgeMode 应答模式
      */
-    public SimpleMessageListenerContainer createUserConsumer(String pLoginName, ChannelAwareMessageListener pMessageListener, AcknowledgeMode pAcknowledgeMode) {
+    public SimpleMessageListenerContainer createUserConsumer(String pLoginName, MessageListener pMessageListener, AcknowledgeMode pAcknowledgeMode) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(mRabbitAdmin.getRabbitTemplate().getConnectionFactory());
         container.setQueueNames(getUserQueueName(pLoginName));
@@ -225,7 +224,7 @@ public class RabbitMqService {
      *
      * @throws APPErrorException
      */
-    public void createAndStartUserConsumer(String pLoginName, ChannelAwareMessageListener pMessageListener, AcknowledgeMode pAcknowledgeMode) throws APPErrorException {
+    public void createAndStartUserConsumer(String pLoginName, MessageListener pMessageListener, AcknowledgeMode pAcknowledgeMode) throws APPErrorException {
         SimpleMessageListenerContainer container = createUserConsumer(pLoginName, pMessageListener, pAcknowledgeMode);
         try {
             container.start();
@@ -242,7 +241,7 @@ public class RabbitMqService {
      *
      * @throws APPErrorException
      */
-    public void createAndStartUserConsumer(String pLoginName, ChannelAwareMessageListener pMessageListener) throws APPErrorException {
+    public void createAndStartUserConsumer(String pLoginName, MessageListener pMessageListener) throws APPErrorException {
         SimpleMessageListenerContainer container = createUserConsumer(pLoginName, pMessageListener);
         try {
             container.start();
